@@ -33,3 +33,18 @@ services:
       - ./config:/config:ro
       - master2:/data
       - master1:/ca:ro
+
+  agent:
+    <<: *x-icinga2
+    deploy:
+      replicas: 7
+    command:
+      - /scripts/await-ca.sh
+      - /scripts/node-setup.sh
+      - /scripts/configure.sh
+      - icinga2
+      - daemon
+    volumes:
+      - ./scripts:/scripts:ro
+      - ./config:/config:ro
+      - master1:/ca:ro
