@@ -34,14 +34,21 @@ services:
       - master2:/data
       - master1:/ca:ro
 
+  mkzones:
+    build:
+      context: mkzones
+
   agent:
     <<: *x-icinga2
+    depends_on:
+      - mkzones
     deploy:
       replicas: 7
     command:
       - /scripts/await-ca.sh
       - /scripts/node-setup.sh
       - /scripts/configure.sh
+      - /scripts/make-zone.sh
       - icinga2
       - daemon
     volumes:
